@@ -1,23 +1,34 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <router-view></router-view>
+    <app-header></app-header>
+    <div id="mainContent" class="row row-eq-height">
+      <app-favorites></app-favorites>
+      <div id="main" class="col-xs-9 text-center block-center">
+        <router-view></router-view>
+      </div>
+    </div>
+    <app-footer></app-footer>
   </div>
 </template>
 
 <script>
+import Header from './components/Header.vue'
+import Favorites from './components/Favorites.vue'
+import Footer from './components/Footer.vue'
+
 export default {
-  name: 'app'
+  name: 'app',
+  components: {
+    appHeader: Header,
+    appFavorites: Favorites,
+    appFooter: Footer
+  }
 }
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+#mainContent {
+  min-height: 40em;
+  background-color: lightblue;
 }
 </style>
