@@ -30,5 +30,37 @@ export default {
 #mainContent {
   min-height: 40em;
   background-color: lightblue;
+  margin: 0;
+  width: 100%;
+}
+
+@media(max-width: 2000px) {
+  #mainContent {
+    min-height: 70em;
+  }
+}
+
+@media(max-width: 1625px) {
+  #mainContent {
+    min-height: 50em;
+  }
+}
+
+@media(max-width: 1400px) {
+  #mainContent {
+    min-height: 40em;
+  }
+}
+
+@media(max-width: 610px) {
+  #mainContent {
+    min-height:
+  }
+}
+
+@media(max-width: 500px) {
+  #main {
+    overflow: scroll;
+  }
 }
 </style>

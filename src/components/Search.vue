@@ -1,14 +1,13 @@
 <template>
-  <div>
-    <form id="search" class="form-inline">
+  <div class="searchDiv">
+    <form id="search" class="form-inline" v-on:submit.prevent="onSubmit">
       <div id="searchBar">
-        <input type="text" placeholder="What do you want to bake?" id="searchText" class="form-control" required>
+        <input type="text" placeholder="What do you want to bake?" id="searchText" class="form-control" required v-model="searchText">
         <button type="submit" class="btn btn-default" value="Search" id="searchButton">Search</button>
       </div>
     </form>
     <div id="error">
       <ul>
-
       </ul>
     </div>
     <div id="addOptions">
@@ -21,36 +20,36 @@
           <ul>
             <li>
               <label>
-                <input type="checkbox" value="valentines-day" name="valentines-day" v-model="holidays"> Valentine's Day
+                <input type="checkbox" value="valentines-day" v-model="holidays"> Valentine's Day
               </label>
             </li>
             <li>
               <label>
-                <input type="checkbox" value="st-patricks-day" name="st-patricks-day" v-model="holidays"> St. Patrick's Day </label>
+                <input type="checkbox" value="st-patricks-day" v-model="holidays"> St. Patrick's Day </label>
             </li>
             <li>
               <label>
-                <input type="checkbox" value="easter" name="easter" v-model="holidays"> Easter </label>
+                <input type="checkbox" value="easter" v-model="holidays"> Easter </label>
             </li>
             <li>
               <label>
-                <input type="checkbox" value="fourthJuly" name="4th-of-july" v-model="holidays"> Fourth of July </label>
+                <input type="checkbox" value="4th-of-july" name="4th-of-july" v-model="holidays"> Fourth of July </label>
             </li>
             <li>
               <label>
-                <input type="checkbox" value="halloween" name="halloween" v-model="holidays"> Halloween </label>
+                <input type="checkbox" value="halloween" v-model="holidays"> Halloween </label>
             </li>
             <li>
               <label>
-                <input type="checkbox" value="thanksgiving" name="thanksgiving" v-model="holidays"> Thanksgiving </label>
+                <input type="checkbox" value="thanksgiving" v-model="holidays"> Thanksgiving </label>
             </li>
             <li>
               <label>
-                <input type="checkbox" value="hanukkah" name="hanukkah" v-model="holidays"> Hanukkah </label>
+                <input type="checkbox" value="hanukkah" v-model="holidays"> Hanukkah </label>
             </li>
             <li>
               <label>
-                <input type="checkbox" value="christmas" name="christmas" v-model="holidays"> Christmas </label>
+                <input type="checkbox" value="christmas" v-model="holidays"> Christmas </label>
             </li>
           </ul>
         </div>
@@ -59,31 +58,31 @@
           <ul>
             <li>
               <label>
-                <input type="checkbox" value="chocolateChips" name="chocolate+chips" id="check" v-model="required"> Chocolate Chips </label>
+                <input type="checkbox" value="chocolate+chips" id="check" v-model="required"> Chocolate Chips </label>
             </li>
             <li>
               <label>
-                <input type="checkbox" value="marshmallow" name="marshmallows" id="check" v-model="required"> Marshmallows </label>
+                <input type="checkbox" value="marshmallows" id="check" v-model="required"> Marshmallows </label>
             </li>
             <li>
               <label>
-                <input type="checkbox" value="cinnamon" name="cinnamon" id="check" v-model="required"> Cinnamon </label>
+                <input type="checkbox" value="cinnamon" id="check" v-model="required"> Cinnamon </label>
             </li>
             <li>
               <label>
-                <input type="checkbox" value="peanutButter" name="peanut+butter" id="check" v-model="required"> Peanut Butter </label>
+                <input type="checkbox" value="peanut+butter" id="check" v-model="required"> Peanut Butter </label>
             </li>
             <li>
               <label>
-                <input type="checkbox" value="fruit" name="fruit" id="check" v-model="required"> Fruit </label>
+                <input type="checkbox" value="fruit" id="check" v-model="required"> Fruit </label>
             </li>
             <li>
               <label>
-                <input type="checkbox" value="nutella" name="Nutella" id="check" v-model="required"> Nutella </label>
+                <input type="checkbox" value="Nutella" id="check" v-model="required"> Nutella </label>
             </li>
             <li>
               <label>
-                <input type="checkbox" value="pumpkin" name="pumpkin" id="check" v-model="required"> Pumpkin </label>
+                <input type="checkbox" value="pumpkin" id="check" v-model="required"> Pumpkin </label>
             </li>
           </ul>
         </div>
@@ -92,19 +91,19 @@
           <ul>
             <li>
               <label>
-                <input type="checkbox" value="gluten" name="Gluten-Free" id="393" v-model="avoid"> Gluten </label>
+                <input type="checkbox" value="Gluten-Free,393" v-model="avoid"> Gluten </label>
             </li>
             <li>
               <label>
-                <input type="checkbox" value="eggs" name="Egg-Free" id="397" v-model="avoid"> Eggs </label>
+                <input type="checkbox" value="Egg-Free,397" v-model="avoid"> Eggs </label>
             </li>
             <li>
               <label>
-                <input type="checkbox" value="Dairy" name="Dairy-Free" id="396" v-model="avoid"> Dairy </label>
+                <input type="checkbox" value="Dairy-Free,396" v-model="avoid"> Dairy </label>
             </li>
             <li>
               <label>
-                <input type="checkbox" value="peanuts" name="Peanut-Free" id="394" v-model="avoid"> Peanuts </label>
+                <input type="checkbox" value="Peanut-Free,394" v-model="avoid"> Peanuts </label>
             </li>
             <li>
               <label>
@@ -124,7 +123,48 @@ export default {
       holidays: [],
       required: [],
       avoid: [],
-      showOptions: false
+      showOptions: false,
+      searchText: '',
+      results: {}
+    }
+  },
+  methods: {
+    onSubmit: function () {
+      let reqUrl = '';
+      let holidayUrl = '';
+      let avoidUrl = '';
+      if (this.required.length) {
+        this.required.map(reqIng => {
+          reqUrl += `&allowedIngredient[]=${reqIng}`;
+        });
+      }
+      if (this.holidays.length) {
+        this.holidays.map(holiday => {
+          holidayUrl += `&allowedHoliday[]=holiday^holiday-${holiday}`;
+        });
+      }
+      if (this.avoid.length) {
+        this.avoid.map(avoidIng => {
+          const array = avoidIng.split(',');
+          avoidUrl += `&allowedAllergy[]=${array[1]}^${array[0]}`;
+        });
+      }
+      const apiUrl1 = 'http://api.yummly.com/v1/api/recipes?_app_id=340d1d95&_app_key=7e0092d58dd4c8cac6f79cde2a9e786f&q=';
+      const apiUrl2 = '&requirePictures=true&allowedCourse[]=course^course-Desserts';
+      const searchUrl = `${apiUrl1}${this.searchText}${apiUrl2}${reqUrl}${holidayUrl}${avoidUrl}`;
+      this.$http.get(searchUrl).then(response => {
+        this.results = response.body;
+        const objectToSend = {
+          results: this.results,
+          searchUrl: searchUrl,
+          attribution: response.body.attribution
+        };
+        this.$bus.$emit('event', objectToSend);
+      });
+      this.searchText = '';
+      this.holidays = [];
+      this.required = [];
+      this.avoid = [];
     }
   }
 }
@@ -176,5 +216,119 @@ input {
 li {
   list-style-type: none;
   display: inline;
+}
+
+.searchDiv {
+  border-bottom: 2px solid black;
+}
+
+@media(max-width: 899px) {
+  .hiddenOptForm li {
+    padding-left: 0px;
+  }
+  .hiddenOptForm ul {
+    padding-left: 0px;
+  }
+}
+
+@media(max-width: 780px) {
+  #searchText: {
+    width: 40%;
+    text-overflow: ellipsis;
+  }
+}
+
+@media(max-width: 767px) {
+  #searchText {
+    display: inline;
+    text-align: center;
+  }
+}
+
+@media(max-width: 679px) {
+  #searchButton {
+    width: 40%;
+  }
+}
+
+@media(max-width: 593px) {
+  .hiddenOptForm ul {
+    font-size: 0.75em;
+  }
+  .hiddenOptForm {
+    text-align: left;
+    position: relative;
+    left: -10px;
+  }
+}
+
+@media(max-width: 532px) {
+  .hiddenOptForm ul {
+    font-size: 0.6em;
+  }
+}
+
+@media(max-width: 473px) {
+  .hiddenOptForm ul {
+    font-size: 0.55em;
+  }
+}
+
+@media(max-width: 460px) {
+  #addSearchButton {
+    max-width: 200px;
+    overflow: hidden;
+    font-size: 0.6em;
+  }
+  #searchButton {
+    overflow: hidden;
+  }
+}
+
+@media(max-width: 453px) {
+  .hiddenOptForm h4 {
+    font-size: 1em;
+  }
+  .hiddenOptForm ul {
+    font-size: 0.5em;
+  }
+}
+
+@media(max-width: 383px) {
+  #searchButton {
+    font-size: 0.9em;
+  }
+}
+
+@media(max-width: 360px) {
+  #searchButton {
+    font-size: 0.85em;
+  }
+}
+
+@media(max-width: 345px) {
+  #searchButton {
+    font-size: 0.8em;
+  }
+  .hiddenOptForm h4 {
+    font-size: 0.85em;
+  }
+}
+
+@media(max-width: 333px) {
+  #searchButton {
+    font-size: 0.75em;
+  }
+  .hiddenOptForm {
+    text-align: left;
+    position: relative;
+    left: -10px;
+  }
+}
+
+@media(max-width: 320px) {
+  #searchButton {
+    font-size: 0.6em;
+  }
 }
 </style>
