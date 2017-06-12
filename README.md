@@ -1,6 +1,6 @@
 # cooks-and-cookies
 
-> A Vue.js project
+> A refactor of my Q1 project for the Galvanize full stack bootcamp. The original project can be found here: [https://github.com/lizziesz/q1-project](https://github.com/lizziesz/q1-project). It has been refactored from jQuery to Vue.
 
 ## Build Setup
 
