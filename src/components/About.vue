@@ -3,7 +3,7 @@
     <p>Welcome to your personal dessert recipe website! Here you can search through thousands of
       dessert recipes, perfect for any craving or occasion. Not satisfied with the first 10 results?
       Click more results to see more! If you do see one you like, star it to save it in your
-      favorites. Your favorites will save so that the nexttime you visit they will display in the
+      favorites. Your favorites will save so that the next time you visit they will display in the
       sidebar. Click the X button to remove a recipe from your favorites. To see the full recipe
       from its original source, just click the recipe name! </p>
     <p>You can modify your search to limit your results to just the ones you want. Available search

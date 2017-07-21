@@ -28,22 +28,22 @@ export default {
   data () {
     return {
       favorites: []
-    };
+    }
   },
   created: function () {
     // if there is no local storage, make sure the value isn't null
     if (!this.$localStorage.get('favorites')) {
-      this.$localStorage.set('favorites', JSON.stringify(this.favorites));
+      this.$localStorage.set('favorites', JSON.stringify(this.favorites))
     }
-    this.favorites = JSON.parse(this.$localStorage.get('favorites'), []);
+    this.favorites = JSON.parse(this.$localStorage.get('favorites'), [])
     this.$bus.$on('fave', (data) => {
-      this.favorites.push(data);
-    });
+      this.favorites.push(data)
+    })
   },
   methods: {
     removeFave: function (index) {
-      this.favorites.splice(index, 1);
-      this.$localStorage.set('favorites', JSON.stringify(this.favorites));
+      this.favorites.splice(index, 1)
+      this.$localStorage.set('favorites', JSON.stringify(this.favorites))
     }
   }
 }

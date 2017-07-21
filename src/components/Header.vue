@@ -11,9 +11,15 @@
     </header>
     <div class="col-xs-2" id="nav">
       <ul class="nav nav-pils nav-stacked list-group-items clearfix">
-        <li class="home" v-bind:class="{ active: activePage === 'home' }"><router-link to="/"><h5>Home</h5></router-link></li>
-        <li class="about" v-bind:class="{ active: activePage === 'about' }"><router-link to="/about"><h5>About</h5></router-link></li>
-        <li class="tips" v-bind:class="{ active: activePage === 'tipsandtricks' }"><router-link to="/tipsandtricks"><h5>Tips and Tricks</h5></router-link></li>
+        <li class="home" v-bind:class="{ active: activePage === 'home' }">
+          <router-link to="/"><h5>Home</h5></router-link>
+        </li>
+        <li class="about" v-bind:class="{ active: activePage === 'about' }">
+          <router-link to="/about"><h5>About</h5></router-link>
+        </li>
+        <li class="tips" v-bind:class="{ active: activePage === 'tipsandtricks' }">
+          <router-link to="/tipsandtricks"><h5>Tips and Tricks</h5></router-link>
+        </li>
       </ul>
     </div>
   </div>
@@ -24,23 +30,23 @@ export default {
   data () {
     return {
       activePage: 'home'
-    };
+    }
   },
   created () {
     if (this.$route.path === '/about') {
-      this.activePage = 'about';
+      this.activePage = 'about'
     } else if (this.$route.path === '/tipsandtricks') {
-      this.activePage = 'tipsandtricks';
+      this.activePage = 'tipsandtricks'
     }
   },
   watch: {
     '$route': function () {
       if (this.$route.path === '/') {
-        this.activePage = 'home';
+        this.activePage = 'home'
       } else if (this.$route.path === '/about') {
-        this.activePage = 'about';
+        this.activePage = 'about'
       } else if (this.$route.path === '/tipsandtricks') {
-        this.activePage = 'tipsandtricks';
+        this.activePage = 'tipsandtricks'
       }
     }
   }

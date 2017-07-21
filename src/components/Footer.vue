@@ -15,12 +15,12 @@ export default {
   data () {
     return {
       attribution: {}
-    };
+    }
   },
   created () {
-    this.$bus.$on('event', (data) => {
-      this.attribution = data.attribution;
-    });
+    this.$bus.$on('search', (data) => {
+      this.attribution = data.attribution
+    })
   }
 }
 </script>

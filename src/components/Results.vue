@@ -1,34 +1,37 @@
 <template>
-  <div>
-    <div v-if="recipes.length">
-      <ul class="list-group resultsList">
-        <div v-for="(recipe, index) in recipes">
-          <li style="height: 100%">
-            <a v-bind:href="recipe.source.sourceRecipeUrl" target="_blank" id="url">
-              <div id="name"> <strong>{{ recipe.name }}</strong></div>
-            </a>
-            <div>
-              <img :src="recipe.images[0].hostedMediumUrl">
-            </div>
-            <div>
-              <button type="button" class="btn btn-warning btn-small star" @click="saveFave(index)">
-                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-              </button>
-            </div>
-            <div id="rating">
-              Yummly Rating: {{ recipe.rating }}
-            </div>
-            <div id="time">
-              Total Time: {{ recipe.totalTime }}
-            </div>
-          </li>
-        </div>
-      </ul>
-      <div id="moreResultsButton">
-        <button class="btn btn-default" value="Search" id="moreButton" @click="searchAgain">
-          More Results
-        </button>
+  <div v-if="recipes.length">
+    <ul class="list-group resultsList">
+      <div v-for="(recipe, index) in recipes">
+        <li>
+          <a v-bind:href="recipe.source.sourceRecipeUrl" target="_blank" id="url">
+            <div id="name"><strong>{{ recipe.name }}</strong></div>
+          </a>
+          <div>
+            <img :src="recipe.images[0].hostedMediumUrl" />
+          </div>
+          <div>
+            <button type="button" class="btn btn-warning btn-small star" @click="saveFave(index)">
+              <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div id="rating">
+            Yummly Rating: {{ recipe.rating }}
+          </div>
+          <div id="time">
+            Total Time: {{ recipe.totalTime }}
+          </div>
+        </li>
       </div>
+    </ul>
+    <div id="moreResultsButton">
+      <button
+        class="btn btn-default"
+        value="Search"
+        id="moreButton"
+        @click="searchAgain"
+        v-if="recipes.length >= 10">
+        More Results
+      </button>
     </div>
   </div>
 </template>
@@ -39,50 +42,52 @@ export default {
     return {
       recipes: [],
       searchUrl: '',
-      favorites: []
+      favorites: [],
+      apiUrl1: 'http://api.yummly.com/v1/api/recipe/',
+      apiUrl2: '?_app_id=340d1d95&_app_key=7e0092d58dd4c8cac6f79cde2a9e786f'
     }
   },
   created: function () {
     if (!this.$localStorage.get('favorites')) {
-      this.$localStorage.set('favorites', JSON.stringify(this.favorites));
+      this.$localStorage.set('favorites', JSON.stringify(this.favorites))
     }
-    this.favorites = JSON.parse(this.$localStorage.get('favorites'), []);
-    this.$bus.$on('event', (data) => {
-      this.recipes = [];
-      this.searchUrl = data.searchUrl;
+    this.favorites = JSON.parse(this.$localStorage.get('favorites'), [])
+    this.$bus.$on('search', (data) => {
+      this.recipes = []
+      this.searchUrl = data.searchUrl
       data.results.matches.forEach(recipe => {
-        this.$http.get(`http://api.yummly.com/v1/api/recipe/${recipe.id}?_app_id=340d1d95&_app_key=7e0092d58dd4c8cac6f79cde2a9e786f`)
+        this.$http.get(`${this.apiUrl1}${recipe.id}${this.apiUrl2}`)
         .then(response => {
-          this.recipes.push(response.data);
-        });
-      });
-    });
+          this.recipes.push(response.data)
+        })
+      })
+    })
   },
   methods: {
     searchAgain: function () {
       function getRandomInt (min, max) {
-        return Math.floor(Math.random() * (max - min)) + min;
+        return Math.floor(Math.random() * (max - min)) + min
       }
       // To get different results than original search
-      const startValue = getRandomInt(11, 100);
+      const startValue = getRandomInt(11, 100)
       this.$http.get(`${this.searchUrl}&start=${startValue}`).then(response => {
         response.body.matches.forEach(recipe => {
-          this.$http.get(`http://api.yummly.com/v1/api/recipe/${recipe.id}?_app_id=340d1d95&_app_key=7e0092d58dd4c8cac6f79cde2a9e786f`)
+          this.$http.get(`${this.apiUrl1}${recipe.id}${this.apiUrl2}`)
           .then(data => {
-            this.recipes.push(data.data);
-          });
-        });
-      });
+            this.recipes.push(data.data)
+          })
+        })
+      })
     },
     saveFave: function (index) {
       const fave = {
         name: this.recipes[index].name,
         url: this.recipes[index].source.sourceRecipeUrl,
         image: this.recipes[index].images[0].hostedMediumUrl
-      };
-      this.favorites.push(fave);
-      this.$localStorage.set('favorites', JSON.stringify(this.favorites));
-      this.$bus.$emit('fave', fave);
+      }
+      this.favorites.push(fave)
+      this.$localStorage.set('favorites', JSON.stringify(this.favorites))
+      this.$bus.$emit('fave', fave)
     }
   }
 }
@@ -100,7 +105,8 @@ export default {
   color: black;
   width: 33%;
   vertical-align: middle;
-  line-height: 100%;
+  height: 18em;
+  overflow: scroll;
 }
 
 .resultsList {
@@ -178,6 +184,7 @@ export default {
   }
   .resultsList li {
     overflow: scroll;
+    height: 12em;
   }
   #moreButton {
     overflow: hidden;

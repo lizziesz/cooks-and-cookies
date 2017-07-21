@@ -1,5 +1,5 @@
 <template>
-  <div id="trickTip">
+  <div>
     <div class="eachTip">
       <p><strong>Tip #1 (Measuring Flour):</strong> Did you know there is a proper way to measure
         flour? If you just scoop your measuring cup into your flour bag, you may not be getting

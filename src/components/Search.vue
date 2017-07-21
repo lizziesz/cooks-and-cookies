@@ -2,16 +2,20 @@
   <div class="searchDiv">
     <form id="search" class="form-inline" v-on:submit.prevent="onSubmit">
       <div id="searchBar">
-        <input type="text" placeholder="What do you want to bake?" id="searchText" class="form-control" required v-model="searchText">
+        <input
+          type="text"
+          placeholder="What do you want to bake?"
+          id="searchText"
+          class="form-control"
+          required
+          v-model="searchText">
         <button type="submit" class="btn btn-default" value="Search" id="searchButton">Search</button>
       </div>
     </form>
-    <div id="error">
-      <ul>
-      </ul>
-    </div>
     <div id="addOptions">
-      <button class="btn btn-default" id="addSearchButton" @click="showOptions = !showOptions">Additional Search Options</button>
+      <button class="btn btn-default" id="addSearchButton" @click="showOptions = !showOptions">
+        Additional Search Options
+      </button>
     </div>
     <div id="hiddenOptions" class="block-center" v-if="showOptions">
       <form class="form-inline">
@@ -25,7 +29,8 @@
             </li>
             <li>
               <label>
-                <input type="checkbox" value="st-patricks-day" v-model="holidays"> St. Patrick's Day </label>
+                <input type="checkbox" value="st-patricks-day" v-model="holidays"> St. Patrick's Day
+              </label>
             </li>
             <li>
               <label>
@@ -33,7 +38,9 @@
             </li>
             <li>
               <label>
-                <input type="checkbox" value="4th-of-july" name="4th-of-july" v-model="holidays"> Fourth of July </label>
+                <input type="checkbox" value="4th-of-july" name="4th-of-july" v-model="holidays">
+                Fourth of July
+              </label>
             </li>
             <li>
               <label>
@@ -58,19 +65,26 @@
           <ul>
             <li>
               <label>
-                <input type="checkbox" value="chocolate+chips" id="check" v-model="required"> Chocolate Chips </label>
+                <input type="checkbox" value="chocolate+chips" id="check" v-model="required">
+                Chocolate Chips
+              </label>
             </li>
             <li>
               <label>
-                <input type="checkbox" value="marshmallows" id="check" v-model="required"> Marshmallows </label>
+                <input type="checkbox" value="marshmallows" id="check" v-model="required">
+                Marshmallows
+              </label>
             </li>
             <li>
               <label>
-                <input type="checkbox" value="cinnamon" id="check" v-model="required"> Cinnamon </label>
+                <input type="checkbox" value="cinnamon" id="check" v-model="required"> Cinnamon
+              </label>
             </li>
             <li>
               <label>
-                <input type="checkbox" value="peanut+butter" id="check" v-model="required"> Peanut Butter </label>
+                <input type="checkbox" value="peanut+butter" id="check" v-model="required">
+                Peanut Butter
+              </label>
             </li>
             <li>
               <label>
@@ -107,7 +121,7 @@
             </li>
             <li>
               <label>
-                <input type="checkbox" value="nuts" name="Tree Nut-Free" id="395" v-model="avoid"> Tree Nuts </label>
+                <input type="checkbox" value="nuts" v-model="avoid"> Tree Nuts </label>
             </li>
           </ul>
         </div>
@@ -130,41 +144,45 @@ export default {
   },
   methods: {
     onSubmit: function () {
-      let reqUrl = '';
-      let holidayUrl = '';
-      let avoidUrl = '';
+      let reqUrl = ''
+      let holidayUrl = ''
+      let avoidUrl = ''
+      // The Yummly API requires specific search parameters to be searched in a particular way,
+      // requires the below set up to get the right URL to send to the Yummly API
       if (this.required.length) {
         this.required.map(reqIng => {
-          reqUrl += `&allowedIngredient[]=${reqIng}`;
-        });
+          reqUrl += `&allowedIngredient[]=${reqIng}`
+        })
       }
       if (this.holidays.length) {
         this.holidays.map(holiday => {
-          holidayUrl += `&allowedHoliday[]=holiday^holiday-${holiday}`;
-        });
+          holidayUrl += `&allowedHoliday[]=holiday^holiday-${holiday}`
+        })
       }
       if (this.avoid.length) {
         this.avoid.map(avoidIng => {
-          const array = avoidIng.split(',');
-          avoidUrl += `&allowedAllergy[]=${array[1]}^${array[0]}`;
-        });
+          // some of the allergies come back with codes (ex: Dairy-Free,396) so need to be split
+          // to be searched correctly
+          const array = avoidIng.split(',')
+          avoidUrl += `&allowedAllergy[]=${array[1]}^${array[0]}`
+        })
       }
-      const apiUrl1 = 'http://api.yummly.com/v1/api/recipes?_app_id=340d1d95&_app_key=7e0092d58dd4c8cac6f79cde2a9e786f&q=';
-      const apiUrl2 = '&requirePictures=true&allowedCourse[]=course^course-Desserts';
-      const searchUrl = `${apiUrl1}${this.searchText}${apiUrl2}${reqUrl}${holidayUrl}${avoidUrl}`;
+      const apiUrl1 = 'http://api.yummly.com/v1/api/recipes?_app_id=340d1d95&_app_key=7e0092d58dd4c8cac6f79cde2a9e786f&q='
+      const apiUrl2 = '&requirePictures=true&allowedCourse[]=course^course-Desserts'
+      const searchUrl = `${apiUrl1}${this.searchText}${apiUrl2}${reqUrl}${holidayUrl}${avoidUrl}`
       this.$http.get(searchUrl).then(response => {
-        this.results = response.body;
+        this.results = response.body
         const objectToSend = {
           results: this.results,
           searchUrl: searchUrl,
           attribution: response.body.attribution
-        };
-        this.$bus.$emit('event', objectToSend);
-      });
-      this.searchText = '';
-      this.holidays = [];
-      this.required = [];
-      this.avoid = [];
+        }
+        this.$bus.$emit('search', objectToSend)
+      })
+      this.searchText = ''
+      this.holidays = []
+      this.required = []
+      this.avoid = []
     }
   }
 }
@@ -190,10 +208,6 @@ input {
 
 #addSearchButton  {
   background-color: #7A5DC7;
-}
-
-#error {
-  color: red;
 }
 
 #addOptions {
